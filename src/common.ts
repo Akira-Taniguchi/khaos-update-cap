@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { ethers, providers } from 'ethers'
 
 export const getLockupContract = async (

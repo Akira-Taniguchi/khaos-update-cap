@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable functional/no-expression-statement */
-/* eslint-disable functional/no-conditional-statement */
-/* eslint-disable functional/functional-parameters */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { providers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import { pow, bignumber, floor } from 'mathjs'
@@ -15,6 +10,7 @@ import {
 } from './graphql'
 
 export const oraclize: FunctionOraclizer = async ({
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	signatureOptions,
 	query,
 	network,
@@ -22,10 +18,10 @@ export const oraclize: FunctionOraclizer = async ({
 	const geometricMean = await calculateGeometricMean(network)
 	const result = isLatestLockedupEvent(network, query.transactionhash)
 		? {
-				message: geometricMean,
-				status: 0,
-				statusMessage: `${network} ${query.publicSignature}`,
-		  }
+			message: geometricMean,
+			status: 0,
+			statusMessage: `${network} ${query.publicSignature}`,
+		}
 		: undefined
 	return result
 }
@@ -44,17 +40,20 @@ const calculateGeometricMean = async (network: string): Promise<string> => {
 				const { data } = await fetchGraphQL()
 				const { property_lockup_sum_values: items } = data
 				const next = [...prev, ...items]
+				// eslint-disable-next-line functional/no-expression-statement
 				resolve(next)
 			}
+			// eslint-disable-next-line functional/no-expression-statement
 			f().catch(console.error)
 		}))()
-	// eslint-disable-next-line functional/no-let
-	let mod = new BigNumber(0)
-	const result = all.map((data) => () => {
-		mod = mod.times(data.sum_values)
+	const sumValues = all.map((data) => {
+		return data.sum_values
+	})
+	const result = sumValues.reduce((data1, data2) => {
+		return new BigNumber(data1).times(new BigNumber(data2)).toString()
 	})
 	return floor(
-		bignumber(pow(bignumber(mod.toString()), all.length).toString())
+		bignumber(pow(bignumber(result), all.length).toString())
 	).toString()
 }
 
@@ -75,5 +74,6 @@ const getTransactionBlockNumber = async (
 	transactionHash: string
 ): Promise<number> => {
 	const transaction = await provider.getTransaction(transactionHash)
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	return transaction.blockNumber!
 }
