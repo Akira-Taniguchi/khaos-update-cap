@@ -8,7 +8,11 @@ import BigNumber from 'bignumber.js'
 import { pow, bignumber, floor } from 'mathjs'
 import { FunctionOraclizer } from '@devprotocol/khaos-core'
 import { getLockupContract, getProvider } from './common'
-import { createGraphQLPropertyLockupSumValuesFetcher, graphql, GraphQLPropertyLockupSumValuesResponse } from './graphql'
+import {
+	createGraphQLPropertyLockupSumValuesFetcher,
+	graphql,
+	GraphQLPropertyLockupSumValuesResponse,
+} from './graphql'
 
 export const oraclize: FunctionOraclizer = async ({
 	signatureOptions,
@@ -16,11 +20,13 @@ export const oraclize: FunctionOraclizer = async ({
 	network,
 }) => {
 	const geometricMean = await calculateGeometricMean(network)
-	const result = isLatestLockedupEvent(network, query.transactionhash) ? {
-		message: geometricMean,
-		status: 0,
-		statusMessage: `${network} ${query.publicSignature}`
-	} : undefined
+	const result = isLatestLockedupEvent(network, query.transactionhash)
+		? {
+				message: geometricMean,
+				status: 0,
+				statusMessage: `${network} ${query.publicSignature}`,
+		  }
+		: undefined
 	return result
 }
 
@@ -47,10 +53,15 @@ const calculateGeometricMean = async (network: string): Promise<string> => {
 	const result = all.map((data) => () => {
 		mod = mod.times(data.sum_values)
 	})
-	return floor(bignumber(pow(bignumber(mod.toString()), all.length).toString())).toString()
+	return floor(
+		bignumber(pow(bignumber(mod.toString()), all.length).toString())
+	).toString()
 }
 
-const isLatestLockedupEvent = async (network: string, transactionHash: string): Promise<boolean> => {
+const isLatestLockedupEvent = async (
+	network: string,
+	transactionHash: string
+): Promise<boolean> => {
 	const provider = getProvider(network)
 	const blockNumber = await getTransactionBlockNumber(provider, transactionHash)
 	const lockupContract = await getLockupContract(network, provider)
@@ -59,10 +70,10 @@ const isLatestLockedupEvent = async (network: string, transactionHash: string): 
 	return events.length === 0
 }
 
-const getTransactionBlockNumber = async (provider: providers.BaseProvider, transactionHash: string): Promise<number> => {
+const getTransactionBlockNumber = async (
+	provider: providers.BaseProvider,
+	transactionHash: string
+): Promise<number> => {
 	const transaction = await provider.getTransaction(transactionHash)
 	return transaction.blockNumber!
 }
-
-
-
