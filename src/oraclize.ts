@@ -18,10 +18,10 @@ export const oraclize: FunctionOraclizer = async ({
 	const geometricMean = await calculateGeometricMean(network)
 	const result = isLatestLockedupEvent(network, query.transactionhash)
 		? {
-			message: geometricMean,
-			status: 0,
-			statusMessage: `${network} ${query.publicSignature}`,
-		}
+				message: geometricMean,
+				status: 0,
+				statusMessage: `${network} ${query.publicSignature}`,
+		  }
 		: undefined
 	return result
 }

@@ -4,14 +4,14 @@ export const createGraphQLPropertyLockupSumValuesFetcher = (
 	fetcher: bent.RequestFunction<bent.ValidResponse>
 	// eslint-disable-next-line functional/functional-parameters
 ) => async (): Promise<GraphQLPropertyLockupSumValuesResponse> =>
-		fetcher('/', {
-			query: `{
+	fetcher('/', {
+		query: `{
 				property_lockup_sum_values(
 				) {
 					sum_values
 				}
 			}`,
-		}).then((r) => (r as unknown) as GraphQLPropertyLockupSumValuesResponse)
+	}).then((r) => (r as unknown) as GraphQLPropertyLockupSumValuesResponse)
 
 export const graphql = (
 	network: string
