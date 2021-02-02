@@ -48,7 +48,7 @@ const getAuthinticatedProperty = async (
 	type R = GraphQLPropertyPropertyAuthenticationResponse['data']['property_authentication']
 	const authinticatedPropertoes = await (async () => {
 		const f = async (i = 0, prev: R = []): Promise<R> => {
-			const { data } = await fetchGraphQL()
+			const { data } = await fetchGraphQL(i)
 			const { property_authentication: items } = data
 			const next = [...prev, ...items]
 			return items.length > 0 ? f(i + items.length, next) : next
@@ -71,7 +71,7 @@ const getLockupValuesMap = async (
 	type R = GraphQLPropertyLockupSumValuesResponse['data']['property_lockup_sum_values']
 	const lockupSumValues = await (async () => {
 		const f = async (i = 0, prev: R = []): Promise<R> => {
-			const { data } = await fetchGraphQL()
+			const { data } = await fetchGraphQL(i)
 			const { property_lockup_sum_values: items } = data
 			const next = [...prev, ...items]
 			return items.length > 0 ? f(i + items.length, next) : next
