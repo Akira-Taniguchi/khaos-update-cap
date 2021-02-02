@@ -21,10 +21,10 @@ export const oraclize: FunctionOraclizer = async ({
 	const geometricMean = await calculateGeometricMean(network)
 	const result = isLatestLockedupEvent(network, query.transactionhash)
 		? {
-			message: geometricMean,
-			status: 0,
-			statusMessage: `${network} ${query.publicSignature}`,
-		}
+				message: geometricMean,
+				status: 0,
+				statusMessage: `${network} ${query.publicSignature}`,
+		  }
 		: undefined
 	return result
 }
@@ -46,7 +46,7 @@ const calculateGeometricMean = async (network: string): Promise<string> => {
 }
 
 const getAuthinticatedProperty = async (
-	network: string,
+	network: string
 ): Promise<readonly string[]> => {
 	const fetchGraphQL = createGraphQLPropertyAuthenticationFetcher(
 		graphql(network)
@@ -66,15 +66,14 @@ const getAuthinticatedProperty = async (
 			f().catch(console.error)
 		}))()
 
-	const properties = authinticatedPropertoes.map(data => {
+	const properties = authinticatedPropertoes.map((data) => {
 		return data.property
 	})
 	return properties
 }
 
-
 const getLockupValuesMap = async (
-	network: string,
+	network: string
 ): Promise<ReadonlyMap<string, string>> => {
 	const fetchGraphQL = createGraphQLPropertyLockupSumValuesFetcher(
 		graphql(network)
@@ -95,12 +94,11 @@ const getLockupValuesMap = async (
 		}))()
 
 	const valueMap = new Map<string, string>()
-	lockupSumValues.forEach(lockupSumValue => {
+	lockupSumValues.forEach((lockupSumValue) => {
 		valueMap.set(lockupSumValue.property_address, lockupSumValue.sum_values)
 	})
 	return valueMap
 }
-
 
 const isLatestLockedupEvent = async (
 	network: string,

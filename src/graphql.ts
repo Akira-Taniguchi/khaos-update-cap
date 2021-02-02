@@ -4,27 +4,29 @@ import bent from 'bent'
 export const createGraphQLPropertyLockupSumValuesFetcher = (
 	fetcher: bent.RequestFunction<bent.ValidResponse>
 ) => async (): Promise<GraphQLPropertyLockupSumValuesResponse> =>
-		fetcher('/', {
-			query: `{
+	fetcher('/', {
+		query: `{
 				property_lockup_sum_values(
 				) {
 					property_address
 					sum_values
 				}
 			}`,
-		}).then((r) => (r as unknown) as GraphQLPropertyLockupSumValuesResponse)
+	}).then((r) => (r as unknown) as GraphQLPropertyLockupSumValuesResponse)
 
 export const createGraphQLPropertyAuthenticationFetcher = (
 	fetcher: bent.RequestFunction<bent.ValidResponse>
 ) => async (): Promise<GraphQLPropertyPropertyAuthenticationResponse> =>
-		fetcher('/', {
-			query: `{
+	fetcher('/', {
+		query: `{
 				property_authentication(
 				) {
 					property
 				}
 			}`,
-		}).then((r) => (r as unknown) as GraphQLPropertyPropertyAuthenticationResponse)
+	}).then(
+		(r) => (r as unknown) as GraphQLPropertyPropertyAuthenticationResponse
+	)
 
 export const graphql = (
 	network: string
