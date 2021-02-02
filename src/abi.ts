@@ -1,4 +1,4 @@
 import { Abi } from '@devprotocol/khaos-core'
-import { lockupAbi } from './common'
+import { lockupAbi } from './contract'
 
 export const abi: Abi = lockupAbi

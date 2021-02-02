@@ -1,17 +1,30 @@
+/* eslint-disable functional/functional-parameters */
 import bent from 'bent'
 
 export const createGraphQLPropertyLockupSumValuesFetcher = (
 	fetcher: bent.RequestFunction<bent.ValidResponse>
-	// eslint-disable-next-line functional/functional-parameters
 ) => async (): Promise<GraphQLPropertyLockupSumValuesResponse> =>
-	fetcher('/', {
-		query: `{
+		fetcher('/', {
+			query: `{
 				property_lockup_sum_values(
 				) {
+					property_address
 					sum_values
 				}
 			}`,
-	}).then((r) => (r as unknown) as GraphQLPropertyLockupSumValuesResponse)
+		}).then((r) => (r as unknown) as GraphQLPropertyLockupSumValuesResponse)
+
+export const createGraphQLPropertyAuthenticationFetcher = (
+	fetcher: bent.RequestFunction<bent.ValidResponse>
+) => async (): Promise<GraphQLPropertyPropertyAuthenticationResponse> =>
+		fetcher('/', {
+			query: `{
+				property_authentication(
+				) {
+					property
+				}
+			}`,
+		}).then((r) => (r as unknown) as GraphQLPropertyPropertyAuthenticationResponse)
 
 export const graphql = (
 	network: string
@@ -24,7 +37,16 @@ export const graphql = (
 export type GraphQLPropertyLockupSumValuesResponse = {
 	readonly data: {
 		readonly property_lockup_sum_values: ReadonlyArray<{
+			readonly property_address: string
 			readonly sum_values: string
+		}>
+	}
+}
+
+export type GraphQLPropertyPropertyAuthenticationResponse = {
+	readonly data: {
+		readonly property_authentication: ReadonlyArray<{
+			readonly property: string
 		}>
 	}
 }

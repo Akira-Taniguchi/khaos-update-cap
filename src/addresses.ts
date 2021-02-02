@@ -1,5 +1,5 @@
 import { FunctionAddresses } from '@devprotocol/khaos-core'
-import { getLockupContract, getProvider } from './common'
+import { getLockupContract, getProvider } from './contract'
 
 export const addresses: FunctionAddresses = async ({ network }) => {
 	const provider = getProvider(network)

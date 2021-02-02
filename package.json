@@ -20,7 +20,6 @@
 		"@types/bent": "^7.3.2",
 		"@types/mathjs": "^6.0.11",
 		"bent": "^7.3.12",
-		"bignumber": "^1.1.0",
 		"bignumber.js": "^9.0.1",
 		"ethers": "5.0.26",
 		"mathjs": "^9.1.0",
