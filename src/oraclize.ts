@@ -21,10 +21,10 @@ export const oraclize: FunctionOraclizer = async ({
 	const geometricMean = await calculateGeometricMean(network)
 	const result = isLatestLockedupEvent(network, query.transactionhash)
 		? {
-				message: geometricMean,
-				status: 0,
-				statusMessage: `${network} ${query.publicSignature}`,
-		  }
+			message: geometricMean,
+			status: 0,
+			statusMessage: `${network} ${query.publicSignature}`,
+		}
 		: undefined
 	return result
 }
@@ -92,7 +92,6 @@ const getLockupValuesMap = async (
 			}
 			f().catch(console.error)
 		}))()
-
 	const valueMap = new Map<string, string>()
 	lockupSumValues.forEach((lockupSumValue) => {
 		valueMap.set(lockupSumValue.property_address, lockupSumValue.sum_values)
@@ -106,7 +105,7 @@ const isLatestLockedupEvent = async (
 ): Promise<boolean> => {
 	const provider = getProvider(network)
 	const blockNumber = await getTransactionBlockNumber(provider, transactionHash)
-	const lockupContract = await getLockupContract(network, provider)
+	const lockupContract = await getLockupContract(provider)
 	const query = lockupContract.filters.query()
 	const events = await lockupContract.queryFilter(query, blockNumber + 1)
 	return events.length === 0

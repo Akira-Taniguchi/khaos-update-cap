@@ -3,6 +3,6 @@ import { getLockupContract, getProvider } from './contract'
 
 export const addresses: FunctionAddresses = async ({ network }) => {
 	const provider = getProvider(network)
-	const lockup = await getLockupContract(network, provider)
+	const lockup = await getLockupContract(provider)
 	return lockup.address
 }

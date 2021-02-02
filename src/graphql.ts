@@ -6,8 +6,7 @@ export const createGraphQLPropertyLockupSumValuesFetcher = (
 ) => async (): Promise<GraphQLPropertyLockupSumValuesResponse> =>
 	fetcher('/', {
 		query: `{
-				property_lockup_sum_values(
-				) {
+				property_lockup_sum_values{
 					property_address
 					sum_values
 				}
@@ -19,8 +18,7 @@ export const createGraphQLPropertyAuthenticationFetcher = (
 ) => async (): Promise<GraphQLPropertyPropertyAuthenticationResponse> =>
 	fetcher('/', {
 		query: `{
-				property_authentication(
-				) {
+				property_authentication{
 					property
 				}
 			}`,
