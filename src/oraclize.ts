@@ -1,4 +1,3 @@
-/* eslint-disable functional/no-expression-statement */
 import { providers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import { pow, bignumber, floor } from 'mathjs'
@@ -12,12 +11,7 @@ import {
 	GraphQLPropertyPropertyAuthenticationResponse,
 } from './graphql'
 
-export const oraclize: FunctionOraclizer = async ({
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	signatureOptions,
-	query,
-	network,
-}) => {
+export const oraclize: FunctionOraclizer = async ({ query, network }) => {
 	const geometricMean = await calculateGeometricMean(network)
 	const result = isLatestLockedupEvent(network, query.transactionhash)
 		? {
@@ -51,20 +45,16 @@ const getAuthinticatedProperty = async (
 	const fetchGraphQL = createGraphQLPropertyAuthenticationFetcher(
 		graphql(network)
 	)
-	const authinticatedPropertoes = await (async () =>
-		new Promise<
-			GraphQLPropertyPropertyAuthenticationResponse['data']['property_authentication']
-		>((resolve) => {
-			const f = async (
-				prev: GraphQLPropertyPropertyAuthenticationResponse['data']['property_authentication'] = []
-			): Promise<void> => {
-				const { data } = await fetchGraphQL()
-				const { property_authentication: items } = data
-				const next = [...prev, ...items]
-				resolve(next)
-			}
-			f().catch(console.error)
-		}))()
+	type R = GraphQLPropertyPropertyAuthenticationResponse['data']['property_authentication']
+	const authinticatedPropertoes = await (async () => {
+		const f = async (i = 0, prev: R = []): Promise<R> => {
+			const { data } = await fetchGraphQL(i)
+			const { property_authentication: items } = data
+			const next = [...prev, ...items]
+			return items.length > 0 ? f(i + items.length, next) : next
+		}
+		return f()
+	})()
 
 	const properties = authinticatedPropertoes.map((data) => {
 		return data.property
@@ -78,25 +68,21 @@ const getLockupValuesMap = async (
 	const fetchGraphQL = createGraphQLPropertyLockupSumValuesFetcher(
 		graphql(network)
 	)
-	const lockupSumValues = await (async () =>
-		new Promise<
-			GraphQLPropertyLockupSumValuesResponse['data']['property_lockup_sum_values']
-		>((resolve) => {
-			const f = async (
-				prev: GraphQLPropertyLockupSumValuesResponse['data']['property_lockup_sum_values'] = []
-			): Promise<void> => {
-				const { data } = await fetchGraphQL()
-				const { property_lockup_sum_values: items } = data
-				const next = [...prev, ...items]
-				resolve(next)
-			}
-			f().catch(console.error)
-		}))()
-	const valueMap = new Map<string, string>()
-	lockupSumValues.forEach((lockupSumValue) => {
-		valueMap.set(lockupSumValue.property_address, lockupSumValue.sum_values)
-	})
-	return valueMap
+	type R = GraphQLPropertyLockupSumValuesResponse['data']['property_lockup_sum_values']
+	const lockupSumValues = await (async () => {
+		const f = async (i = 0, prev: R = []): Promise<R> => {
+			const { data } = await fetchGraphQL(i)
+			const { property_lockup_sum_values: items } = data
+			const next = [...prev, ...items]
+			return items.length > 0 ? f(i + items.length, next) : next
+		}
+		return f()
+	})()
+
+	const values = lockupSumValues.map<readonly [string, string]>(
+		({ property_address, sum_values }) => [property_address, sum_values]
+	)
+	return new Map<string, string>(values)
 }
 
 const isLatestLockedupEvent = async (

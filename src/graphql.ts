@@ -1,12 +1,13 @@
-/* eslint-disable functional/functional-parameters */
 import bent from 'bent'
 
 export const createGraphQLPropertyLockupSumValuesFetcher = (
 	fetcher: bent.RequestFunction<bent.ValidResponse>
-) => async (): Promise<GraphQLPropertyLockupSumValuesResponse> =>
+) => async (offset = 0): Promise<GraphQLPropertyLockupSumValuesResponse> =>
 	fetcher('/', {
 		query: `{
-				property_lockup_sum_values{
+				property_lockup_sum_values(
+					offset: ${offset}
+				) {
 					property_address
 					sum_values
 				}
@@ -15,10 +16,14 @@ export const createGraphQLPropertyLockupSumValuesFetcher = (
 
 export const createGraphQLPropertyAuthenticationFetcher = (
 	fetcher: bent.RequestFunction<bent.ValidResponse>
-) => async (): Promise<GraphQLPropertyPropertyAuthenticationResponse> =>
+) => async (
+	offset = 0
+): Promise<GraphQLPropertyPropertyAuthenticationResponse> =>
 	fetcher('/', {
 		query: `{
-				property_authentication{
+				property_authentication(
+					offset: ${offset}
+				) {
 					property
 				}
 			}`,
