@@ -1,10 +1,9 @@
 import { ethers, providers } from 'ethers'
 
 export const getLockupContract = async (
-	network: string,
 	provider: providers.BaseProvider
 ): Promise<ethers.Contract> => {
-	const addressConfigContraCt = getAddressConfigContract(network, provider)
+	const addressConfigContraCt = getAddressConfigContract(provider)
 	const lockupAddress = await addressConfigContraCt.lockup()
 	const lockupContract = new ethers.Contract(lockupAddress, lockupAbi, provider)
 	return lockupContract
@@ -21,16 +20,15 @@ export const lockupAbi = [
 ]
 
 const getAddressConfigContract = (
-	network: string,
 	provider: providers.BaseProvider
 ): ethers.Contract => {
-	const addressConfigAddress =
-		network === 'mainnet'
-			? '0x1D415aa39D647834786EB9B5a333A50e9935b796'
-			: '0xD6D07f1c048bDF2B3d5d9B6c25eD1FC5348D0A70'
-	const abi = [
-		'function lockup() external view returns (address)',
-		'function metricsGroup() external view returns (address)',
-	]
+	const addressConfigAddress = isMainNet(provider)
+		? '0x1D415aa39D647834786EB9B5a333A50e9935b796'
+		: '0xD6D07f1c048bDF2B3d5d9B6c25eD1FC5348D0A70'
+	const abi = ['function lockup() external view returns (address)']
 	return new ethers.Contract(addressConfigAddress, abi, provider)
+}
+
+const isMainNet = (provider: providers.BaseProvider): boolean => {
+	return provider.network.chainId === 1
 }

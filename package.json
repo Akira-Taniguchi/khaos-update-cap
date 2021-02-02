@@ -19,11 +19,13 @@
 		"@devprotocol/khaos-core": "1.2.1",
 		"@types/bent": "^7.3.2",
 		"@types/mathjs": "^6.0.11",
+		"@types/sinon": "^9.0.10",
 		"bent": "^7.3.12",
 		"bignumber.js": "^9.0.1",
 		"ethers": "5.0.26",
 		"mathjs": "^9.1.0",
-		"ramda": "0.27.1"
+		"ramda": "0.27.1",
+		"sinon": "^9.2.4"
 	},
 	"devDependencies": {
 		"@ava/typescript": "1.1.1",

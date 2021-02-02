@@ -91,7 +91,7 @@ const isLatestLockedupEvent = async (
 ): Promise<boolean> => {
 	const provider = getProvider(network)
 	const blockNumber = await getTransactionBlockNumber(provider, transactionHash)
-	const lockupContract = await getLockupContract(network, provider)
+	const lockupContract = await getLockupContract(provider)
 	const query = lockupContract.filters.query()
 	const events = await lockupContract.queryFilter(query, blockNumber + 1)
 	return events.length === 0
