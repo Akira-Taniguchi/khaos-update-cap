@@ -1,8 +1,13 @@
+/* eslint-disable functional/no-expression-statement */
 import { providers } from 'ethers'
 import BigNumber from 'bignumber.js'
-import { pow, bignumber, floor } from 'mathjs'
+import { pow, bignumber, divide } from 'mathjs'
 import { FunctionOraclizer } from '@devprotocol/khaos-core'
-import { getLockupContract, getProvider } from './contract'
+import {
+	getLockupContract,
+	getProvider,
+	getTransactionBlockNumber,
+} from './contract'
 import {
 	createGraphQLPropertyLockupSumValuesFetcher,
 	graphql,
@@ -13,7 +18,11 @@ import {
 
 export const oraclize: FunctionOraclizer = async ({ query, network }) => {
 	const geometricMean = await calculateGeometricMean(network)
-	const result = isLatestLockedupEvent(network, query.transactionhash)
+	const isLatestEvent = await isLatestLockedupEvent(
+		network,
+		query.transactionhash
+	)
+	const result = isLatestEvent
 		? {
 				message: geometricMean,
 				status: 0,
@@ -34,9 +43,12 @@ const calculateGeometricMean = async (network: string): Promise<string> => {
 	const result = values.reduce((data1, data2) => {
 		return data1.times(data2)
 	})
-	return floor(
-		bignumber(pow(bignumber(result.toString()), values.length).toString())
-	).toString()
+	const tmp = divide(1, values.length)
+	const calculationResults = pow(
+		bignumber(result.toString()),
+		bignumber(tmp.toString())
+	)
+	return bignumber(calculationResults.toString()).toFixed(0)
 }
 
 const getAuthinticatedProperty = async (
@@ -55,7 +67,6 @@ const getAuthinticatedProperty = async (
 		}
 		return f()
 	})()
-
 	const properties = authinticatedPropertoes.map((data) => {
 		return data.property
 	})
@@ -78,7 +89,6 @@ const getLockupValuesMap = async (
 		}
 		return f()
 	})()
-
 	const values = lockupSumValues.map<readonly [string, string]>(
 		({ property_address, sum_values }) => [property_address, sum_values]
 	)
@@ -92,16 +102,11 @@ const isLatestLockedupEvent = async (
 	const provider = getProvider(network)
 	const blockNumber = await getTransactionBlockNumber(provider, transactionHash)
 	const lockupContract = await getLockupContract(provider)
-	const query = lockupContract.filters.query()
-	const events = await lockupContract.queryFilter(query, blockNumber + 1)
+	const lockedup = lockupContract.filters.Lockedup()
+	const events = await lockupContract.queryFilter(
+		lockedup,
+		blockNumber + 1,
+		'latest'
+	)
 	return events.length === 0
-}
-
-const getTransactionBlockNumber = async (
-	provider: providers.BaseProvider,
-	transactionHash: string
-): Promise<number> => {
-	const transaction = await provider.getTransaction(transactionHash)
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	return transaction.blockNumber!
 }

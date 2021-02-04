@@ -14,6 +14,15 @@ export const getProvider = (network: string): providers.BaseProvider => {
 	return new ethers.providers.JsonRpcProvider(endpoint)
 }
 
+export const getTransactionBlockNumber = async (
+	provider: providers.BaseProvider,
+	transactionHash: string
+): Promise<number> => {
+	const transaction = await provider.getTransaction(transactionHash)
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	return transaction.blockNumber!
+}
+
 export const lockupAbi = [
 	'event Lockedup(address, address, uint256)',
 	'function updateCap(uint256) external',

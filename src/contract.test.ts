@@ -1,7 +1,12 @@
 /* eslint-disable functional/immutable-data */
 import test from 'ava'
 import { ethers } from 'ethers'
-import { lockupAbi, getProvider, getLockupContract } from './contract'
+import {
+	lockupAbi,
+	getProvider,
+	getLockupContract,
+	getTransactionBlockNumber,
+} from './contract'
 import { getLockupAddress } from './test-utils'
 
 // lockupAbi
@@ -44,4 +49,14 @@ test('mainnetのLockupコントラクトオブジェクトが取得できる', a
 		provider
 	)
 	t.is(lockupAddress, lockup.address)
+})
+
+// getTransactionBlockNumber
+test('トランザクションのブロック番号が取得できる', async (t) => {
+	const provider = ethers.getDefaultProvider('ropsten')
+	const number = await getTransactionBlockNumber(
+		provider,
+		'0xfa052419311d16810602fadc56cf9bf20d4a575e0a6c08d25e17ca1ed245632a'
+	)
+	t.is(number, 9270014)
 })
