@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable functional/immutable-data */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable functional/no-let */
 /* eslint-disable functional/prefer-readonly-type */
 import test from 'ava'
 import sinon from 'sinon'
+import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
 import { oraclize } from './oraclize'
 import * as contractModules from './contract'
@@ -30,14 +34,23 @@ test.before(() => {
 				return {} as any
 			},
 		},
-		queryFilter: function (a: any, b: any, c: any) {
+		queryFilter: function (_a: any, _b: any, _c: any) {
 			return []
+		},
+	} as any)
+	stub3.withArgs(ropstenProvider).resolves({
+		filters: {
+			Lockedup: function () {
+				return {} as any
+			},
+		},
+		queryFilter: function (_a: any, _b: any, _c: any) {
+			return [{}]
 		},
 	} as any)
 })
 
 test('oraclize is executed.', async (t) => {
-	// eslint-disable-next-line functional/immutable-data
 	process.env[`KHAOS_MAINNET_GRAPHQL`] = 'https://api.devprtcl.com/v1/graphql'
 	const res = await oraclize({
 		signatureOptions: { address: 'account', id: 'signature', message: 'data' },
@@ -48,10 +61,27 @@ test('oraclize is executed.', async (t) => {
 		} as any,
 		network: 'mainnet',
 	})
-	t.is(res!.message, 'data')
+	const result = new BigNumber(res!.message)
+	t.is(result.toFixed(0), result.toString())
+	t.is(result.gt('1'), true)
 	t.is(res!.status, 0)
 	t.is(res!.statusMessage, 'mainnet dummy-public-signature')
 })
+
+test('oraclize is not executed.', async (t) => {
+	process.env[`KHAOS_ROPSTEN_GRAPHQL`] = 'https://api.devprtcl.com/v1/graphql'
+	const res = await oraclize({
+		signatureOptions: { address: 'account', id: 'signature', message: 'data' },
+		query: {
+			allData: '{}',
+			publicSignature: 'dummy-public-signature',
+			transactionhash: 'toransaction-hash',
+		} as any,
+		network: 'ropsten',
+	})
+	t.is(typeof res === 'undefined', true)
+})
+
 test.after(() => {
 	stub.restore()
 	stub2.restore()

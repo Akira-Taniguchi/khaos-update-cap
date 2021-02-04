@@ -6,7 +6,8 @@ export const createGraphQLPropertyLockupSumValuesFetcher = (
 	fetcher('/', {
 		query: `{
 				property_lockup_sum_values(
-					offset: ${offset}
+					offset: ${offset},
+					order_by: {property_address: asc}
 				) {
 					property_address
 					sum_values
@@ -14,6 +15,7 @@ export const createGraphQLPropertyLockupSumValuesFetcher = (
 			}`,
 	}).then((r) => (r as unknown) as GraphQLPropertyLockupSumValuesResponse)
 
+// TODO 結局Marketだけにするか、どうするか確認
 export const createGraphQLPropertyAuthenticationFetcher = (
 	fetcher: bent.RequestFunction<bent.ValidResponse>
 ) => async (
@@ -22,7 +24,9 @@ export const createGraphQLPropertyAuthenticationFetcher = (
 	fetcher('/', {
 		query: `{
 				property_authentication(
-					offset: ${offset}
+					where: {market: {_in: ["0x67d31300953Cd9aB2beE6e541A121cF93640af20", "0x34A7AdC94C4D41C3e3469F98033B372cB2fAf318"]}},
+					offset: ${offset},
+					order_by: {block_number: asc}
 				) {
 					property
 				}

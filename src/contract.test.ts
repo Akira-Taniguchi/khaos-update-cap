@@ -10,20 +10,20 @@ import {
 import { getLockupAddress } from './test-utils'
 
 // lockupAbi
-test('lockupのABIが取得できる.', (t) => {
+test('lthis function can get the ABI of the Lockup contract.', (t) => {
 	t.is(lockupAbi[0], 'event Lockedup(address, address, uint256)')
 	t.is(lockupAbi[1], 'function updateCap(uint256) external')
 })
 
 // getProvider
-test('mainnet providerが生成される.', async (t) => {
+test('get the provider of the mainnet.', async (t) => {
 	process.env[`KHAOS_MAINNET_JSON_RPC`] = 'https://testdomain:1234'
 	const provider = getProvider('mainnet')
 	const converted = <ethers.providers.JsonRpcProvider>provider
 	t.is(converted.connection.url, 'https://testdomain:1234')
 })
 
-test('ropsten providerが生成される.', async (t) => {
+test('get the provider of the ropsten.', async (t) => {
 	process.env[`KHAOS_ROPSTEN_JSON_RPC`] = 'https://testdomainropsten:1234'
 	const provider = getProvider('ropsten')
 	const converted = <ethers.providers.JsonRpcProvider>provider
@@ -31,7 +31,7 @@ test('ropsten providerが生成される.', async (t) => {
 })
 
 // getLockupContract
-test('ropstenのLockupコントラクトオブジェクトが取得できる', async (t) => {
+test('get the Lockup contract object for ropsten.', async (t) => {
 	const provider = ethers.getDefaultProvider('ropsten')
 	const lockup = await getLockupContract(provider)
 	const lockupAddress = await getLockupAddress(
@@ -41,7 +41,7 @@ test('ropstenのLockupコントラクトオブジェクトが取得できる', a
 	t.is(lockupAddress, lockup.address)
 })
 
-test('mainnetのLockupコントラクトオブジェクトが取得できる', async (t) => {
+test('get the Lockup contract object for mainnet.', async (t) => {
 	const provider = ethers.getDefaultProvider('homestead')
 	const lockup = await getLockupContract(provider)
 	const lockupAddress = await getLockupAddress(
@@ -52,7 +52,7 @@ test('mainnetのLockupコントラクトオブジェクトが取得できる', a
 })
 
 // getTransactionBlockNumber
-test('トランザクションのブロック番号が取得できる', async (t) => {
+test('The block number of the transaction can be obtained.', async (t) => {
 	const provider = ethers.getDefaultProvider('ropsten')
 	const number = await getTransactionBlockNumber(
 		provider,

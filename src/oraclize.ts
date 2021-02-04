@@ -1,5 +1,3 @@
-/* eslint-disable functional/no-expression-statement */
-import { providers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import { pow, bignumber, divide } from 'mathjs'
 import { FunctionOraclizer } from '@devprotocol/khaos-core'
@@ -60,6 +58,8 @@ const getAuthinticatedProperty = async (
 	type R = GraphQLPropertyPropertyAuthenticationResponse['data']['property_authentication']
 	const authinticatedPropertoes = await (async () => {
 		const f = async (i = 0, prev: R = []): Promise<R> => {
+			// eslint-disable-next-line functional/no-expression-statement
+			await sleep(1000)
 			const { data } = await fetchGraphQL(i)
 			const { property_authentication: items } = data
 			const next = [...prev, ...items]
@@ -82,6 +82,8 @@ const getLockupValuesMap = async (
 	type R = GraphQLPropertyLockupSumValuesResponse['data']['property_lockup_sum_values']
 	const lockupSumValues = await (async () => {
 		const f = async (i = 0, prev: R = []): Promise<R> => {
+			// eslint-disable-next-line functional/no-expression-statement
+			await sleep(1000)
 			const { data } = await fetchGraphQL(i)
 			const { property_lockup_sum_values: items } = data
 			const next = [...prev, ...items]
@@ -109,4 +111,8 @@ const isLatestLockedupEvent = async (
 		'latest'
 	)
 	return events.length === 0
+}
+
+function sleep(milliseconds: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, milliseconds))
 }

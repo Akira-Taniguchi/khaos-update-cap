@@ -10,7 +10,7 @@ import {
 	GraphQLPropertyPropertyAuthenticationResponse,
 } from './graphql'
 
-test('lockup sum valuesのデータが取得できる', async (t) => {
+test('get the data for lockup sum values.', async (t) => {
 	process.env[`KHAOS_MAINNET_GRAPHQL`] = 'https://api.devprtcl.com/v1/graphql'
 	const fetchGraphQL = createGraphQLPropertyLockupSumValuesFetcher(
 		graphql('mainnet')
@@ -37,7 +37,7 @@ test('lockup sum valuesのデータが取得できる', async (t) => {
 	})
 })
 
-test('property_authinticationのデータが取得できる', async (t) => {
+test('Property_authintication data can be retrieved.', async (t) => {
 	process.env[`KHAOS_MAINNET_GRAPHQL`] = 'https://api.devprtcl.com/v1/graphql'
 	const fetchGraphQL = createGraphQLPropertyAuthenticationFetcher(
 		graphql('mainnet')
